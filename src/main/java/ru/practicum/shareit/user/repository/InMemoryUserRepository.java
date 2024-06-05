@@ -1,8 +1,8 @@
 package ru.practicum.shareit.user.repository;
 
 import org.springframework.stereotype.Repository;
+import ru.practicum.shareit.exceptions.ConflictException;
 import ru.practicum.shareit.exceptions.NotFoundException;
-import ru.practicum.shareit.exceptions.ValidationException;
 import ru.practicum.shareit.user.dto.UserDto;
 import ru.practicum.shareit.user.model.User;
 
@@ -19,7 +19,7 @@ public class InMemoryUserRepository implements UserRepository {
     public User saveUser(User user) {
         for (User savedUser : users.values()) {
             if (savedUser.getEmail().equals(user.getEmail())) {
-                throw new ValidationException("Пользователь с таким email уже зарегистрирован");
+                throw new ConflictException("Пользователь с таким email уже зарегистрирован");
             }
         }
         user.setId(++idCount);
@@ -29,7 +29,7 @@ public class InMemoryUserRepository implements UserRepository {
 
     @Override
     public User getUser(Long id) {
-        if (users.get(id) == null) {
+        if (!users.containsKey(id)) {
             throw new NotFoundException("Пользователь не найден");
         }
         return users.get(id);
@@ -42,21 +42,19 @@ public class InMemoryUserRepository implements UserRepository {
 
     @Override
     public User patchUser(UserDto userDto, Long id) {
-        User user = users.get(id);
-        if (user == null) {
-            throw new NotFoundException("Пользователь не найден");
-        }
+        User user = getUser(id);
         if (userDto.getName() != null) {
             user.setName(userDto.getName());
         }
         if (userDto.getEmail() != null && !userDto.getEmail().equals(user.getEmail())) {
             for (User savedUser : users.values()) {
                 if (savedUser.getEmail().equals(userDto.getEmail())) {
-                    throw new ValidationException("Пользователь с таким email уже зарегистрирован");
+                    throw new ConflictException("Пользователь с таким email уже зарегистрирован");
                 }
             }
             user.setEmail(userDto.getEmail());
         }
+
         return user;
     }
 

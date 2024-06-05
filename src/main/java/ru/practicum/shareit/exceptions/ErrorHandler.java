@@ -7,7 +7,7 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 import java.util.Map;
 
-@RestControllerAdvice(basePackages = "ru.yandex.practicum.shareit")
+@RestControllerAdvice(basePackages = "ru.practicum.shareit")
 public class ErrorHandler {
 
     @ExceptionHandler
@@ -31,6 +31,12 @@ public class ErrorHandler {
     @ExceptionHandler
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public Map<String, String> illegalArgumentException(final IllegalArgumentException e) {
+        return Map.of("error", e.getMessage());
+    }
+
+    @ExceptionHandler
+    @ResponseStatus(HttpStatus.CONFLICT)
+    public Map<String, String> conflictException(final ConflictException e) {
         return Map.of("error", e.getMessage());
     }
 
