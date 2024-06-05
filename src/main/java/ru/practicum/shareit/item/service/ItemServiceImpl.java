@@ -8,6 +8,7 @@ import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.item.repository.ItemRepository;
 import ru.practicum.shareit.user.repository.UserRepository;
 
+import java.util.Collections;
 import java.util.List;
 
 @Service
@@ -48,7 +49,7 @@ public class ItemServiceImpl implements ItemService {
     @Override
     public List<Item> search(String text) {
         if (text.isBlank()) {
-            throw new IllegalArgumentException("Текст для поиска не может быть пустым");
+            return Collections.emptyList();
         }
         return repository.search(text);
     }
