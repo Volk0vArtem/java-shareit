@@ -3,7 +3,6 @@ package ru.practicum.shareit.user.repository;
 import org.springframework.stereotype.Repository;
 import ru.practicum.shareit.exceptions.ConflictException;
 import ru.practicum.shareit.exceptions.NotFoundException;
-import ru.practicum.shareit.user.dto.UserDto;
 import ru.practicum.shareit.user.model.User;
 
 import java.util.ArrayList;
@@ -41,18 +40,18 @@ public class InMemoryUserRepository implements UserRepository {
     }
 
     @Override
-    public User patchUser(UserDto userDto, Long id) {
+    public User patchUser(User newUser, Long id) {
         User user = getUser(id);
-        if (userDto.getName() != null) {
-            user.setName(userDto.getName());
+        if (newUser.getName() != null) {
+            user.setName(newUser.getName());
         }
-        if (userDto.getEmail() != null && !userDto.getEmail().equals(user.getEmail())) {
+        if (newUser.getEmail() != null && !newUser.getEmail().equals(user.getEmail())) {
             for (User savedUser : users.values()) {
-                if (savedUser.getEmail().equals(userDto.getEmail())) {
+                if (savedUser.getEmail().equals(newUser.getEmail())) {
                     throw new ConflictException("Пользователь с таким email уже зарегистрирован");
                 }
             }
-            user.setEmail(userDto.getEmail());
+            user.setEmail(newUser.getEmail());
         }
 
         return user;
