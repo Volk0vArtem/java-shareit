@@ -1,7 +1,6 @@
 package ru.practicum.shareit.booking.service;
 
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import ru.practicum.shareit.booking.dto.BookingDto;
 import ru.practicum.shareit.booking.model.Booking;
@@ -19,14 +18,12 @@ import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
-@Slf4j
 public class BookingServiceImpl implements BookingService {
 
     private final BookingMapper bookingMapper;
     private final BookingRepository bookingRepository;
     private final ItemRepository itemRepository;
     private final UserRepository userRepository;
-
 
     @Override
     public BookingDto save(BookingDto bookingDto, Long userId) {
@@ -125,7 +122,7 @@ public class BookingServiceImpl implements BookingService {
                         .map(bookingMapper::toBookingDto)
                         .collect(Collectors.toList());
             case "CURRENT":
-                return bookingRepository.findCurrentBookings(userId, LocalDateTime.now())
+                return bookingRepository.findCurrentBookingsByOwner(userId, LocalDateTime.now())
                         .stream()
                         .map(bookingMapper::toBookingDto)
                         .collect(Collectors.toList());
