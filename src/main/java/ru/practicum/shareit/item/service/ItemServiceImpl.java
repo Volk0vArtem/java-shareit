@@ -2,6 +2,7 @@ package ru.practicum.shareit.item.service;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import ru.practicum.shareit.booking.dto.BookingDto;
 import ru.practicum.shareit.booking.model.Booking;
 import ru.practicum.shareit.booking.repository.BookingRepository;
 import ru.practicum.shareit.booking.service.BookingMapper;
@@ -46,16 +47,22 @@ public class ItemServiceImpl implements ItemService {
             throw new NotFoundException("Вещь не найдена");
         }
         ItemDto itemDto = itemMapper.toItemDto(itemOptional.get());
-        if (itemDto.getId().equals(userId)) {
-            itemDto.setLastBooking(bookingMapper.toBookingDto(getLastBooking(id, userId)));
-            itemDto.setNextBooking(bookingMapper.toBookingDto(getNextBooking(id, userId)));
-        }
+
+        itemDto.setLastBooking(getLastBooking(id, userId));
+        itemDto.setNextBooking(getNextBooking(id, userId));
         return itemDto;
     }
 
     @Override
     public List<ItemDto> getItemsByID(Long id) {
-        return repository.findAllByOwnerId(id).stream().map(itemMapper::toItemDto).collect(Collectors.toList());
+        List<ItemDto> items = repository.findAllByOwnerId(id).stream()
+                .map(itemMapper::toItemDto)
+                .collect(Collectors.toList());
+        for (ItemDto itemDto : items) {
+            itemDto.setLastBooking(getLastBooking(itemDto.getId(), id));
+            itemDto.setNextBooking(getNextBooking(itemDto.getId(), id));
+        }
+        return items;
     }
 
     @Override
@@ -91,19 +98,19 @@ public class ItemServiceImpl implements ItemService {
         return result.stream().map(itemMapper::toItemDto).collect(Collectors.toList());
     }
 
-    private Booking getLastBooking(Long itemId, Long userId) {
+    private BookingDto getLastBooking(Long itemId, Long userId) {
         List<Booking> pastBookings = bookingRepository.findPastBookings(itemId, userId, LocalDateTime.now());
         if (pastBookings.isEmpty()) {
             return null;
         }
-        return pastBookings.get(0);
+        return bookingMapper.toBookingDto(pastBookings.get(0));
     }
 
-    private Booking getNextBooking(Long itemId, Long userId) {
+    private BookingDto getNextBooking(Long itemId, Long userId) {
         List<Booking> nextBookings = bookingRepository.findFutureBookings(itemId, userId, LocalDateTime.now());
         if (nextBookings.isEmpty()) {
             return null;
         }
-        return nextBookings.get(0);
+        return bookingMapper.toBookingDto(nextBookings.get(0));
     }
 }

@@ -7,9 +7,9 @@ import ru.practicum.shareit.booking.model.Booking;
 
 @Mapper(componentModel = "spring")
 public interface BookingMapper {
-    Booking toBooking (BookingDto bookingDto);
+    Booking toBooking(BookingDto bookingDto);
 
     @Mapping(source = "item.id", target = "itemId")
     @Mapping(source = "booker.id", target = "bookerId")
-    BookingDto toBookingDto (Booking booking);
+    BookingDto toBookingDto(Booking booking);
 }
