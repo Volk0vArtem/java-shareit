@@ -7,7 +7,7 @@ import java.util.List;
 public interface ItemService {
     ItemDto saveItem(ItemDto itemDto, Long userId);
 
-    ItemDto getItem(Long id);
+    ItemDto getItem(Long id, Long userId);
 
     List<ItemDto> getItemsByID(Long id);
 

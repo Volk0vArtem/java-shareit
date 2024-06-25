@@ -33,9 +33,9 @@ public class ItemController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<ItemDto> getItem(@PathVariable Long id) {
+    public ResponseEntity<ItemDto> getItem(@PathVariable Long id, @RequestHeader("X-Sharer-User-Id") Long userId) {
         log.info("Получен запрос на получение вещи id={}", id);
-        return ResponseEntity.ok().body(service.getItem(id));
+        return ResponseEntity.ok().body(service.getItem(id, userId));
     }
 
     @GetMapping
