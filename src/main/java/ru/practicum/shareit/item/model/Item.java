@@ -1,8 +1,11 @@
 package ru.practicum.shareit.item.model;
 
 import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
+import lombok.Setter;
+import lombok.ToString;
 import ru.practicum.shareit.user.model.User;
 
 import javax.persistence.Column;
@@ -14,8 +17,11 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
-@Data
-@NoArgsConstructor
+@Getter
+@Setter
+@ToString
+@EqualsAndHashCode
+@RequiredArgsConstructor
 @AllArgsConstructor
 @Entity
 @Table(name = "items")

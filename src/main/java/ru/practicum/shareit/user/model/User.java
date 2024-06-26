@@ -1,8 +1,11 @@
 package ru.practicum.shareit.user.model;
 
 import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
+import lombok.Setter;
+import lombok.ToString;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -10,8 +13,11 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
-@Data
-@NoArgsConstructor
+@Getter
+@Setter
+@ToString
+@EqualsAndHashCode
+@RequiredArgsConstructor
 @AllArgsConstructor
 @Entity
 @Table(name = "users")
