@@ -40,4 +40,9 @@ public class ErrorHandler {
         return Map.of("error", e.getMessage());
     }
 
+    @ExceptionHandler
+    @ResponseStatus(HttpStatus.FORBIDDEN)
+    public Map<String, String> forbiddenException(final ForbiddenException e) {
+        return Map.of("error", e.getMessage());
+    }
 }
