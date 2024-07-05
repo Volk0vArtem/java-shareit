@@ -28,7 +28,8 @@ public class ItemController {
     private final ItemService service;
 
     @PostMapping
-    public ResponseEntity<ItemDto> saveItem(@RequestBody @Valid ItemDto itemDto, @RequestHeader("X-Sharer-User-Id") Long userId) {
+    public ResponseEntity<ItemDto> saveItem(@RequestBody @Valid ItemDto itemDto,
+                                            @RequestHeader("X-Sharer-User-Id") Long userId) {
         log.info("Получен запрос на добавление вещи {}", itemDto);
         return ResponseEntity.ok().body(service.saveItem(itemDto, userId));
     }
