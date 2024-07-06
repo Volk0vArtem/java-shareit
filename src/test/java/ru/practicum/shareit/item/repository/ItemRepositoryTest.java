@@ -4,6 +4,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
+import org.springframework.data.domain.PageRequest;
 import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.user.model.User;
 import ru.practicum.shareit.user.repository.UserRepository;
@@ -52,7 +53,7 @@ class ItemRepositoryTest {
 
     @Test
     public void testSearchByName() {
-        List<Item> result = itemRepository.search("item1");
+        List<Item> result = itemRepository.search("item1", PageRequest.of(0, 10));
 
         assertEquals(1, result.size());
         assertEquals(item1, result.get(0));
@@ -60,7 +61,7 @@ class ItemRepositoryTest {
 
     @Test
     public void testSearchByDescription() {
-        List<Item> result = itemRepository.search("description1");
+        List<Item> result = itemRepository.search("description1", PageRequest.of(0, 10));
 
         assertEquals(1, result.size());
         assertTrue(result.contains(item1));
@@ -68,7 +69,7 @@ class ItemRepositoryTest {
 
     @Test
     public void testSearchSubstring() {
-        List<Item> result = itemRepository.search("tion2");
+        List<Item> result = itemRepository.search("tion2", PageRequest.of(0, 10));
 
         assertEquals(1, result.size());
         assertTrue(result.contains(item2));
@@ -76,7 +77,7 @@ class ItemRepositoryTest {
 
     @Test
     public void testSearchTwoResults() {
-        List<Item> result = itemRepository.search("description");
+        List<Item> result = itemRepository.search("description", PageRequest.of(0, 10));
 
         assertEquals(2, result.size());
         assertTrue(result.contains(item1));
@@ -85,7 +86,7 @@ class ItemRepositoryTest {
 
     @Test
     public void testSearchNotFound() {
-        List<Item> result = itemRepository.search("text");
+        List<Item> result = itemRepository.search("text", PageRequest.of(0, 10));
 
         assertEquals(0, result.size());
     }
@@ -105,7 +106,7 @@ class ItemRepositoryTest {
         user2 = userRepository.save(user2);
         itemRepository.save(item3);
 
-        List<Item> result = itemRepository.findAllByOwnerId(user2.getId());
+        List<Item> result = itemRepository.findAllByOwnerId(user2.getId(), PageRequest.of(0, 10));
 
         assertEquals(1, result.size());
         assertTrue(result.contains(item3));
@@ -126,7 +127,7 @@ class ItemRepositoryTest {
         userRepository.save(user2);
         itemRepository.save(item3);
 
-        List<Item> result = itemRepository.findAllByOwnerId(user1.getId());
+        List<Item> result = itemRepository.findAllByOwnerId(user1.getId(), PageRequest.of(0, 10));
 
         assertEquals(2, result.size());
         assertTrue(result.contains(item1));
@@ -148,7 +149,7 @@ class ItemRepositoryTest {
         userRepository.save(user2);
         itemRepository.save(item3);
 
-        List<Item> result = itemRepository.findAllByOwnerId(999L);
+        List<Item> result = itemRepository.findAllByOwnerId(999L, PageRequest.of(0, 10));
 
         assertEquals(0, result.size());
     }

@@ -44,7 +44,7 @@ public class UserServiceImpl implements UserService {
             throw new NotFoundException("Пользователь не найден");
         }
         User user = userOptional.get();
-         if (updatedUser.getName() != null) {
+        if (updatedUser.getName() != null) {
             user.setName(updatedUser.getName());
         }
         if (updatedUser.getEmail() != null) {

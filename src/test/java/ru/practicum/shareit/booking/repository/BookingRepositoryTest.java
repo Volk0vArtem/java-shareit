@@ -4,6 +4,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
+import org.springframework.data.domain.PageRequest;
 import ru.practicum.shareit.booking.model.Booking;
 import ru.practicum.shareit.booking.model.Status;
 import ru.practicum.shareit.item.model.Item;
@@ -76,7 +77,8 @@ class BookingRepositoryTest {
         booking2.setEnd(LocalDateTime.now().plusMinutes(20));
         booking2 = bookingRepository.save(booking2);
 
-        List<Booking> result = bookingRepository.findCurrentBookings(user2.getId(), LocalDateTime.now());
+        List<Booking> result = bookingRepository.findCurrentBookings(user2.getId(), LocalDateTime.now(),
+                PageRequest.of(0, 10));
 
         assertEquals(1, result.size());
         assertTrue(result.contains(booking1));
@@ -92,7 +94,8 @@ class BookingRepositoryTest {
         booking2.setEnd(LocalDateTime.now().plusMinutes(20));
         booking2 = bookingRepository.save(booking2);
 
-        List<Booking> result = bookingRepository.findCurrentBookingsByOwner(user1.getId(), LocalDateTime.now());
+        List<Booking> result = bookingRepository.findCurrentBookingsByOwner(user1.getId(), LocalDateTime.now(),
+                PageRequest.of(0, 10));
 
         assertEquals(1, result.size());
         assertTrue(result.contains(booking1));

@@ -6,6 +6,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.data.domain.PageRequest;
 import ru.practicum.shareit.booking.repository.BookingRepository;
 import ru.practicum.shareit.booking.service.BookingMapperImpl;
 import ru.practicum.shareit.exceptions.ForbiddenException;
@@ -155,17 +156,17 @@ class ItemServiceImplTest {
 
     @Test
     void searchEmptyText() {
-        assertEquals(Collections.emptyList(), itemService.search(""));
-        verify(itemRepository, never()).search(anyString());
+        assertEquals(Collections.emptyList(), itemService.search("", PageRequest.of(0, 10)));
+        verify(itemRepository, never()).search(anyString(), any(PageRequest.class));
     }
 
     @Test
     void search() {
         Item item = generator.nextObject(Item.class);
-        when(itemRepository.search("text"))
+        when(itemRepository.search("text", PageRequest.of(0, 10)))
                 .thenReturn(List.of(item));
-        itemService.search("text");
-        verify(itemRepository).search("text");
+        itemService.search("text", PageRequest.of(0, 10));
+        verify(itemRepository).search("text", PageRequest.of(0, 10));
     }
 
     @Test

@@ -6,6 +6,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import ru.practicum.shareit.item.ItemController;
@@ -147,7 +148,7 @@ class ItemControllerTest {
 
     @Test
     void getItemsByID() throws Exception {
-        when(itemService.getItemsByID(anyLong()))
+        when(itemService.getItemsByID(anyLong(), any(PageRequest.class)))
                 .thenReturn(List.of(item));
         mvc.perform(get("/items")
                         .content(mapper.writeValueAsString(item))
@@ -160,7 +161,7 @@ class ItemControllerTest {
 
     @Test
     void getItemsByIdHeaderFail() throws Exception {
-        when(itemService.getItemsByID(anyLong()))
+        when(itemService.getItemsByID(anyLong(), any(PageRequest.class)))
                 .thenReturn(List.of(item));
         mvc.perform(get("/items")
                         .characterEncoding(StandardCharsets.UTF_8)

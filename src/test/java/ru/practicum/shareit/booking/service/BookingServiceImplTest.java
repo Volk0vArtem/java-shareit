@@ -6,6 +6,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.data.domain.PageRequest;
 import ru.practicum.shareit.booking.dto.BookingDto;
 import ru.practicum.shareit.booking.model.Booking;
 import ru.practicum.shareit.booking.model.Status;
@@ -212,54 +213,58 @@ class BookingServiceImplTest {
         when(userRepository.findById(anyLong()))
                 .thenReturn(Optional.of(owner));
 
-        bookingService.getBookings(owner.getId(), "ALL");
+        bookingService.getBookings(owner.getId(), "ALL", PageRequest.of(0, 10));
 
-        verify(bookingRepository).findAllByBookerIdOrderByStartDesc(owner.getId());
+        verify(bookingRepository).findAllByBookerIdOrderByStartDesc(owner.getId(), PageRequest.of(0, 10));
     }
 
     @Test
     void getBookingsCurrent() {
         when(userRepository.findById(anyLong()))
                 .thenReturn(Optional.of(owner));
-        bookingService.getBookings(owner.getId(), "CURRENT");
+        bookingService.getBookings(owner.getId(), "CURRENT", PageRequest.of(0, 10));
 
-        verify(bookingRepository).findCurrentBookings(anyLong(), any(LocalDateTime.class));
+        verify(bookingRepository).findCurrentBookings(anyLong(), any(LocalDateTime.class), any(PageRequest.class));
     }
 
     @Test
     void getBookingsPast() {
         when(userRepository.findById(anyLong()))
                 .thenReturn(Optional.of(owner));
-        bookingService.getBookings(owner.getId(), "PAST");
+        bookingService.getBookings(owner.getId(), "PAST", PageRequest.of(0, 10));
 
-        verify(bookingRepository).findAllByBookerIdAndEndBeforeOrderByStartDesc(anyLong(), any(LocalDateTime.class));
+        verify(bookingRepository).findAllByBookerIdAndEndBeforeOrderByStartDesc(anyLong(), any(LocalDateTime.class),
+                any(PageRequest.class));
     }
 
     @Test
     void getBookingsFuture() {
         when(userRepository.findById(anyLong()))
                 .thenReturn(Optional.of(owner));
-        bookingService.getBookings(owner.getId(), "FUTURE");
+        bookingService.getBookings(owner.getId(), "FUTURE", PageRequest.of(0, 10));
 
-        verify(bookingRepository).findAllByBookerIdAndStartAfterOrderByStartDesc(anyLong(), any(LocalDateTime.class));
+        verify(bookingRepository).findAllByBookerIdAndStartAfterOrderByStartDesc(anyLong(), any(LocalDateTime.class),
+                any(PageRequest.class));
     }
 
     @Test
     void getBookingsWaiting() {
         when(userRepository.findById(anyLong()))
                 .thenReturn(Optional.of(owner));
-        bookingService.getBookings(owner.getId(), "WAITING");
+        bookingService.getBookings(owner.getId(), "WAITING", PageRequest.of(0, 10));
 
-        verify(bookingRepository).findAllByBookerIdAndStatusOrderByStartDesc(owner.getId(), Status.WAITING);
+        verify(bookingRepository).findAllByBookerIdAndStatusOrderByStartDesc(owner.getId(), Status.WAITING,
+                PageRequest.of(0, 10));
     }
 
     @Test
     void getBookingsRejected() {
         when(userRepository.findById(anyLong()))
                 .thenReturn(Optional.of(owner));
-        bookingService.getBookings(owner.getId(), "REJECTED");
+        bookingService.getBookings(owner.getId(), "REJECTED", PageRequest.of(0, 10));
 
-        verify(bookingRepository).findAllByBookerIdAndStatusOrderByStartDesc(owner.getId(), Status.REJECTED);
+        verify(bookingRepository).findAllByBookerIdAndStatusOrderByStartDesc(owner.getId(), Status.REJECTED,
+                PageRequest.of(0, 10));
     }
 
     @Test
@@ -267,7 +272,7 @@ class BookingServiceImplTest {
         when(userRepository.findById(anyLong()))
                 .thenReturn(Optional.of(owner));
         assertThrows(IllegalArgumentException.class,
-                () -> bookingService.getBookings(owner.getId(), "REJECT"));
+                () -> bookingService.getBookings(owner.getId(), "REJECT", PageRequest.of(0, 10)));
     }
 
     @Test
@@ -275,54 +280,59 @@ class BookingServiceImplTest {
         when(userRepository.findById(anyLong()))
                 .thenReturn(Optional.of(owner));
 
-        bookingService.getBookingsByOwner(owner.getId(), "ALL");
+        bookingService.getBookingsByOwner(owner.getId(), "ALL", PageRequest.of(0, 10));
 
-        verify(bookingRepository).findAllByItemOwnerIdOrderByStartDesc(owner.getId());
+        verify(bookingRepository).findAllByItemOwnerIdOrderByStartDesc(owner.getId(), PageRequest.of(0, 10));
     }
 
     @Test
     void getBookingsByOwnerCurrent() {
         when(userRepository.findById(anyLong()))
                 .thenReturn(Optional.of(owner));
-        bookingService.getBookingsByOwner(owner.getId(), "CURRENT");
+        bookingService.getBookingsByOwner(owner.getId(), "CURRENT", PageRequest.of(0, 10));
 
-        verify(bookingRepository).findCurrentBookingsByOwner(anyLong(), any(LocalDateTime.class));
+        verify(bookingRepository).findCurrentBookingsByOwner(anyLong(), any(LocalDateTime.class),
+                any(PageRequest.class));
     }
 
     @Test
     void getBookingsByOwnerPast() {
         when(userRepository.findById(anyLong()))
                 .thenReturn(Optional.of(owner));
-        bookingService.getBookingsByOwner(owner.getId(), "PAST");
+        bookingService.getBookingsByOwner(owner.getId(), "PAST", PageRequest.of(0, 10));
 
-        verify(bookingRepository).findAllByItemOwnerIdAndEndBeforeOrderByStartDesc(anyLong(), any(LocalDateTime.class));
+        verify(bookingRepository).findAllByItemOwnerIdAndEndBeforeOrderByStartDesc(anyLong(), any(LocalDateTime.class),
+                any(PageRequest.class));
     }
 
     @Test
     void getBookingsByOwnerFuture() {
         when(userRepository.findById(anyLong()))
                 .thenReturn(Optional.of(owner));
-        bookingService.getBookingsByOwner(owner.getId(), "FUTURE");
+        bookingService.getBookingsByOwner(owner.getId(), "FUTURE", PageRequest.of(0, 10));
 
-        verify(bookingRepository).findAllByItemOwnerIdAndStartAfterOrderByStartDesc(anyLong(), any(LocalDateTime.class));
+        verify(bookingRepository).findAllByItemOwnerIdAndStartAfterOrderByStartDesc(anyLong(), any(LocalDateTime.class),
+                any(PageRequest.class));
     }
 
     @Test
     void getBookingsByOwnerWaiting() {
         when(userRepository.findById(anyLong()))
                 .thenReturn(Optional.of(owner));
-        bookingService.getBookingsByOwner(owner.getId(), "WAITING");
+        bookingService.getBookingsByOwner(owner.getId(), "WAITING", PageRequest.of(0, 10));
 
-        verify(bookingRepository).findAllByItemOwnerIdAndStatusOrderByStartDesc(owner.getId(), Status.WAITING);
+        verify(bookingRepository).findAllByItemOwnerIdAndStatusOrderByStartDesc(owner.getId(), Status.WAITING,
+                PageRequest.of(0, 10));
     }
 
     @Test
     void getBookingsByOwnerRejected() {
         when(userRepository.findById(anyLong()))
                 .thenReturn(Optional.of(owner));
-        bookingService.getBookingsByOwner(owner.getId(), "REJECTED");
+        bookingService.getBookingsByOwner(owner.getId(), "REJECTED", PageRequest.of(0, 10));
 
-        verify(bookingRepository).findAllByItemOwnerIdAndStatusOrderByStartDesc(owner.getId(), Status.REJECTED);
+        verify(bookingRepository).findAllByItemOwnerIdAndStatusOrderByStartDesc(owner.getId(), Status.REJECTED,
+                PageRequest.of(0, 10));
     }
 
     @Test
@@ -330,6 +340,7 @@ class BookingServiceImplTest {
         when(userRepository.findById(anyLong()))
                 .thenReturn(Optional.of(owner));
         assertThrows(IllegalArgumentException.class,
-                () -> bookingService.getBookingsByOwner(owner.getId(), "REJECT"));
+                () -> bookingService.getBookingsByOwner(owner.getId(), "REJECT",
+                        PageRequest.of(0, 10)));
     }
 }

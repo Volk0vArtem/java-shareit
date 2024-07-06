@@ -5,6 +5,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.data.domain.PageRequest;
 import ru.practicum.shareit.booking.dto.BookingDto;
 import ru.practicum.shareit.booking.service.BookingService;
 import ru.practicum.shareit.item.comment.dto.CommentDto;
@@ -39,7 +40,9 @@ class ItemServiceImplIntegrationTest {
     void setUp() {
         user1 = generator.nextObject(UserDto.class);
         item1 = generator.nextObject(ItemDto.class);
+        item1.setRequestId(null);
         item2 = generator.nextObject(ItemDto.class);
+        item2.setRequestId(null);
     }
 
     @Test
@@ -60,7 +63,7 @@ class ItemServiceImplIntegrationTest {
         user1 = userService.saveUser(user1);
         itemService.saveItem(item1, user1.getId());
         itemService.saveItem(item2, user1.getId());
-        List<ItemDto> items = itemService.getItemsByID(user1.getId());
+        List<ItemDto> items = itemService.getItemsByID(user1.getId(), PageRequest.of(0, 10));
 
         assertEquals(item1.getName(), items.get(0).getName());
         assertEquals(item1.getDescription(), items.get(0).getDescription());
@@ -88,7 +91,7 @@ class ItemServiceImplIntegrationTest {
         itemService.saveItem(item1, user1.getId());
         item2.setName("текст");
         itemService.saveItem(item2, user1.getId());
-        List<ItemDto> search = itemService.search("тек");
+        List<ItemDto> search = itemService.search("тек", PageRequest.of(0, 10));
 
         assertEquals(1, search.size());
         assertEquals(item2.getName(), search.get(0).getName());

@@ -5,6 +5,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.data.domain.PageRequest;
 import ru.practicum.shareit.booking.dto.BookingDto;
 import ru.practicum.shareit.booking.model.Status;
 import ru.practicum.shareit.item.dto.ItemDto;
@@ -44,6 +45,7 @@ class BookingServiceImplIntegrationTest {
         user1 = userService.saveUser(user1);
         user2 = userService.saveUser(user2);
         item = generator.nextObject(ItemDto.class);
+        item.setRequestId(null);
         item = itemService.saveItem(item, user1.getId());
         booking = new BookingDto();
         booking.setStart(LocalDateTime.now().plusSeconds(1));
@@ -81,7 +83,7 @@ class BookingServiceImplIntegrationTest {
         booking = bookingService.save(booking, user2.getId());
         booking2 = bookingService.save(booking2, user2.getId());
 
-        List<BookingDto> bookings = bookingService.getBookings(user2.getId(), "ALL");
+        List<BookingDto> bookings = bookingService.getBookings(user2.getId(), "ALL", PageRequest.of(0, 10));
 
         assertEquals(2, bookings.size());
         assertEquals(booking.getId(), bookings.get(1).getId());
@@ -97,7 +99,8 @@ class BookingServiceImplIntegrationTest {
         booking = bookingService.save(booking, user2.getId());
         booking2 = bookingService.save(booking2, user2.getId());
 
-        List<BookingDto> bookings = bookingService.getBookingsByOwner(user1.getId(), "ALL");
+        List<BookingDto> bookings = bookingService.getBookingsByOwner(user1.getId(), "ALL",
+                PageRequest.of(0, 10));
 
         assertEquals(2, bookings.size());
         assertEquals(booking.getId(), bookings.get(1).getId());
