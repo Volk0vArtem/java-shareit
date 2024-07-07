@@ -30,19 +30,19 @@ public class ErrorHandler {
 
     @ExceptionHandler
     @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public Map<String, String> illegalArgumentException(final IllegalArgumentException e) {
+    public Map<String, String> handleIllegalArgumentException(final IllegalArgumentException e) {
         return Map.of("error", e.getMessage());
     }
 
     @ExceptionHandler
     @ResponseStatus(HttpStatus.CONFLICT)
-    public Map<String, String> conflictException(final ConflictException e) {
+    public Map<String, String> handleConflictException(final ConflictException e) {
         return Map.of("error", e.getMessage());
     }
 
     @ExceptionHandler
     @ResponseStatus(HttpStatus.FORBIDDEN)
-    public Map<String, String> forbiddenException(final ForbiddenException e) {
+    public Map<String, String> handleForbiddenException(final ForbiddenException e) {
         return Map.of("error", e.getMessage());
     }
 }

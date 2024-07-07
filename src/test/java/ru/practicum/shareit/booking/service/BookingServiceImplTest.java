@@ -138,6 +138,21 @@ class BookingServiceImplTest {
     }
 
     @Test
+    void saveItemNullTime() {
+        when(itemRepository.findById(anyLong()))
+                .thenReturn(Optional.of(item));
+        when(userRepository.findById(booker.getId()))
+                .thenReturn(Optional.of(booker));
+        bookingDto.setStart(null);
+        bookingDto.setEnd(null);
+
+        assertThrows(IllegalArgumentException.class,
+                () -> bookingService.save(bookingDto, booker.getId()));
+
+        verify(bookingRepository, never()).save(any(Booking.class));
+    }
+
+    @Test
     void approve() {
         Booking booking = bookingMapper.toBooking(bookingDto);
         booking.setStatus(Status.WAITING);
@@ -206,6 +221,18 @@ class BookingServiceImplTest {
 
         assertThrows(NotFoundException.class,
                 () -> bookingService.getBooking(booking.getId(), owner.getId() + 1));
+    }
+
+    @Test
+    void getBookingNoAccess() {
+        Booking booking = bookingMapper.toBooking(bookingDto);
+        booking.setBooker(owner);
+        booking.setItem(item);
+        when(bookingRepository.findById(anyLong()))
+                .thenReturn(Optional.of(booking));
+
+        assertThrows(NotFoundException.class,
+                () -> bookingService.getBooking(booking.getId(), 99L));
     }
 
     @Test
