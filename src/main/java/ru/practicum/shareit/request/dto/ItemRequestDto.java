@@ -20,7 +20,7 @@ import java.util.List;
 @AllArgsConstructor
 @RequiredArgsConstructor
 public class ItemRequestDto {
-    Long id;
+    private Long id;
     @NotBlank
     private String description;
     @Positive
