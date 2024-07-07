@@ -158,7 +158,6 @@ class BookingControllerTest {
         when(bookingService.getBookings(anyLong(), anyString(), any(PageRequest.class)))
                 .thenReturn(List.of(bookingDto));
         mvc.perform(get("/bookings?from=0&size=10")
-                        .content(mapper.writeValueAsString(List.of(bookingDto)))
                         .characterEncoding(StandardCharsets.UTF_8)
                         .header("X-Sharer-User-Id", 1)
                         .contentType(MediaType.APPLICATION_JSON)
@@ -168,9 +167,7 @@ class BookingControllerTest {
 
     @Test
     void getBookingsPaginationFail() throws Exception {
-        BookingDto bookingDto = new BookingDto();
         mvc.perform(get("/bookings?from=-1&size=1")
-                        .content(mapper.writeValueAsString(List.of(bookingDto)))
                         .characterEncoding(StandardCharsets.UTF_8)
                         .header("X-Sharer-User-Id", 1)
                         .contentType(MediaType.APPLICATION_JSON)
@@ -184,7 +181,6 @@ class BookingControllerTest {
         when(bookingService.getBookingsByOwner(anyLong(), anyString(), any(PageRequest.class)))
                 .thenReturn(List.of(bookingDto));
         mvc.perform(get("/bookings/owner?from=0&size=10")
-                        .content(mapper.writeValueAsString(List.of(bookingDto)))
                         .characterEncoding(StandardCharsets.UTF_8)
                         .header("X-Sharer-User-Id", 1)
                         .contentType(MediaType.APPLICATION_JSON)
@@ -194,9 +190,7 @@ class BookingControllerTest {
 
     @Test
     void getBookingsByOwnerPaginationFail() throws Exception {
-        BookingDto bookingDto = new BookingDto();
         mvc.perform(get("/bookings/owner?from=-1&size=10")
-                        .content(mapper.writeValueAsString(List.of(bookingDto)))
                         .characterEncoding(StandardCharsets.UTF_8)
                         .header("X-Sharer-User-Id", 1)
                         .contentType(MediaType.APPLICATION_JSON)
