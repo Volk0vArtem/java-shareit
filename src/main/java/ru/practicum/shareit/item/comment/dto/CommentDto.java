@@ -9,6 +9,7 @@ import lombok.ToString;
 import ru.practicum.shareit.item.dto.ItemDto;
 
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.Positive;
 import java.time.LocalDateTime;
 
 @Getter
@@ -22,6 +23,7 @@ public class CommentDto {
     @NotBlank
     private String text;
     private ItemDto item;
+    @Positive
     private Long authorId;
     private String authorName;
     private LocalDateTime created;
