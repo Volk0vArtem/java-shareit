@@ -2,6 +2,7 @@ package ru.practicum.shareit.item;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
@@ -17,6 +18,8 @@ import ru.practicum.shareit.item.dto.ItemDto;
 import ru.practicum.shareit.item.service.ItemService;
 
 import javax.validation.Valid;
+import javax.validation.constraints.Positive;
+import javax.validation.constraints.PositiveOrZero;
 import java.util.List;
 
 @RestController
@@ -28,7 +31,8 @@ public class ItemController {
     private final ItemService service;
 
     @PostMapping
-    public ResponseEntity<ItemDto> saveItem(@RequestBody @Valid ItemDto itemDto, @RequestHeader("X-Sharer-User-Id") Long userId) {
+    public ResponseEntity<ItemDto> saveItem(@RequestBody @Valid ItemDto itemDto,
+                                            @RequestHeader("X-Sharer-User-Id") Long userId) {
         log.info("Получен запрос на добавление вещи {}", itemDto);
         return ResponseEntity.ok().body(service.saveItem(itemDto, userId));
     }
@@ -40,9 +44,12 @@ public class ItemController {
     }
 
     @GetMapping
-    public ResponseEntity<List<ItemDto>> getItemsByID(@RequestHeader("X-Sharer-User-Id") Long id) {
+    public ResponseEntity<List<ItemDto>> getItemsByID(
+            @RequestHeader("X-Sharer-User-Id") Long id,
+            @RequestParam(required = false, defaultValue = "0") @Positive int from,
+            @RequestParam(required = false, defaultValue = "10") @Positive int size) {
         log.info("Получен запрос на получение вещей пользователя id={}", id);
-        return ResponseEntity.ok().body(service.getItemsByID(id));
+        return ResponseEntity.ok().body(service.getItemsByID(id, PageRequest.of(from / size, size)));
     }
 
     @PatchMapping("/{id}")
@@ -53,9 +60,15 @@ public class ItemController {
     }
 
     @GetMapping("/search")
-    public ResponseEntity<List<ItemDto>> search(@RequestParam String text) {
+    public ResponseEntity<List<ItemDto>> search(
+            @RequestParam String text,
+            @PositiveOrZero @RequestParam(required = false, defaultValue = "0") int from,
+            @Positive @RequestParam(required = false, defaultValue = "10") int size) {
+        if (from < 0 || size < 1) {
+            throw new IllegalArgumentException("Некорректные параметры пагинации");
+        }
         log.info("Получен запрос на поиск вещи по запросу «{}»", text);
-        return ResponseEntity.ok().body(service.search(text));
+        return ResponseEntity.ok().body(service.search(text, PageRequest.of(from / size, size)));
     }
 
     @PostMapping("{itemId}/comment")

@@ -39,7 +39,11 @@ public class UserServiceImpl implements UserService {
     @Override
     public UserDto patchUser(UserDto userDto, Long id) {
         User updatedUser = userMapper.toUser(userDto);
-        User user = userRepository.getReferenceById(id);
+        Optional<User> userOptional = userRepository.findById(id);
+        if (userOptional.isEmpty()) {
+            throw new NotFoundException("Пользователь не найден");
+        }
+        User user = userOptional.get();
         if (updatedUser.getName() != null) {
             user.setName(updatedUser.getName());
         }
