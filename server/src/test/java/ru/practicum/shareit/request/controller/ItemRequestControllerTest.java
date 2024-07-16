@@ -21,7 +21,6 @@ import java.util.List;
 import static org.hamcrest.Matchers.is;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
-import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -77,38 +76,6 @@ class ItemRequestControllerTest {
     }
 
     @Test
-    void saveHeaderFail() throws Exception {
-        mvc.perform(post("/requests")
-                        .content(mapper.writeValueAsString(itemRequest1))
-                        .characterEncoding(StandardCharsets.UTF_8)
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .accept(MediaType.APPLICATION_JSON))
-                .andExpect(status().isBadRequest());
-    }
-
-    @Test
-    void saveDescriptionFail() throws Exception {
-        itemRequest1.setDescription("");
-        mvc.perform(post("/requests")
-                        .content(mapper.writeValueAsString(itemRequest1))
-                        .characterEncoding(StandardCharsets.UTF_8)
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .accept(MediaType.APPLICATION_JSON))
-                .andExpect(status().isBadRequest());
-    }
-
-    @Test
-    void saveRequesterIdFail() throws Exception {
-        itemRequest1.setRequesterId(-1L);
-        mvc.perform(post("/requests")
-                        .content(mapper.writeValueAsString(itemRequest1))
-                        .characterEncoding(StandardCharsets.UTF_8)
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .accept(MediaType.APPLICATION_JSON))
-                .andExpect(status().isBadRequest());
-    }
-
-    @Test
     void getAll() throws Exception {
         when(service.getAll(anyLong(), any(PageRequest.class)))
                 .thenReturn(List.of(itemRequest1, itemRequest2));
@@ -119,37 +86,5 @@ class ItemRequestControllerTest {
                         .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk());
         verify(service).getAll(anyLong(), any(PageRequest.class));
-    }
-
-    @Test
-    void getAllHeaderFail() throws Exception {
-        mvc.perform(get("/requests/all?from=0&size=10")
-                        .characterEncoding(StandardCharsets.UTF_8)
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .accept(MediaType.APPLICATION_JSON))
-                .andExpect(status().isBadRequest());
-        verify(service, never()).getAll(anyLong(), any(PageRequest.class));
-    }
-
-    @Test
-    void getAllFromFail() throws Exception {
-        mvc.perform(get("/requests/all?from=-1&size=10")
-                        .characterEncoding(StandardCharsets.UTF_8)
-                        .header("X-Sharer-User-Id", 1)
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .accept(MediaType.APPLICATION_JSON))
-                .andExpect(status().isBadRequest());
-        verify(service, never()).getAll(anyLong(), any(PageRequest.class));
-    }
-
-    @Test
-    void getAllSizeFail() throws Exception {
-        mvc.perform(get("/requests/all?from=0&size=-1")
-                        .characterEncoding(StandardCharsets.UTF_8)
-                        .header("X-Sharer-User-Id", 1)
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .accept(MediaType.APPLICATION_JSON))
-                .andExpect(status().isBadRequest());
-        verify(service, never()).getAll(anyLong(), any(PageRequest.class));
     }
 }

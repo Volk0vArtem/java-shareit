@@ -64,40 +64,6 @@ class UserControllerTest {
     }
 
     @Test
-    void saveUserEmailFail() throws Exception {
-        when(userService.saveUser(any(UserDto.class)))
-                .thenAnswer(invocationOnMock -> {
-                    UserDto userDto = invocationOnMock.getArgument(0, UserDto.class);
-                    userDto.setId(1L);
-                    return userDto;
-                });
-        user.setEmail("wrongemail");
-        mvc.perform(post("/users")
-                        .content(mapper.writeValueAsString(user))
-                        .characterEncoding(StandardCharsets.UTF_8)
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .accept(MediaType.APPLICATION_JSON))
-                .andExpect(status().isBadRequest());
-    }
-
-    @Test
-    void saveUserNameFail() throws Exception {
-        when(userService.saveUser(any(UserDto.class)))
-                .thenAnswer(invocationOnMock -> {
-                    UserDto userDto = invocationOnMock.getArgument(0, UserDto.class);
-                    userDto.setId(1L);
-                    return userDto;
-                });
-        user.setName("");
-        mvc.perform(post("/users")
-                        .content(mapper.writeValueAsString(user))
-                        .characterEncoding(StandardCharsets.UTF_8)
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .accept(MediaType.APPLICATION_JSON))
-                .andExpect(status().isBadRequest());
-    }
-
-    @Test
     void getUser() throws Exception {
         when(userService.getUser(anyLong()))
                 .thenReturn(user);

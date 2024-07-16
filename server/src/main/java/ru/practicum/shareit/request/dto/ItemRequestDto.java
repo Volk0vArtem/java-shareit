@@ -8,8 +8,6 @@ import lombok.Setter;
 import lombok.ToString;
 import ru.practicum.shareit.item.dto.ItemDto;
 
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.Positive;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -21,9 +19,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class ItemRequestDto {
     private Long id;
-    @NotBlank
     private String description;
-    @Positive
     private Long requesterId;
     private LocalDateTime created;
     private List<ItemDto> items;

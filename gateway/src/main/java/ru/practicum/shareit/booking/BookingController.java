@@ -30,8 +30,8 @@ public class BookingController {
 
     @PatchMapping("/{bookingId}")
     public ResponseEntity<Object> approve(@PathVariable Long bookingId,
-                                              @RequestHeader("X-Sharer-User-Id") Long userId,
-                                              @RequestParam Boolean approved) {
+                                          @RequestHeader("X-Sharer-User-Id") Long userId,
+                                          @RequestParam Boolean approved) {
         log.info("Получен запрос на {} бронирования", approved);
         return bookingClient.approve(bookingId, userId, approved);
     }

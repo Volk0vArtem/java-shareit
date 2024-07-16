@@ -15,9 +15,6 @@ import org.springframework.web.bind.annotation.RestController;
 import ru.practicum.shareit.request.dto.ItemRequestDto;
 import ru.practicum.shareit.request.service.ItemRequestService;
 
-import javax.validation.Valid;
-import javax.validation.constraints.Positive;
-import javax.validation.constraints.PositiveOrZero;
 import java.util.List;
 
 @RestController
@@ -29,7 +26,7 @@ public class ItemRequestController {
     private final ItemRequestService service;
 
     @PostMapping
-    public ResponseEntity<ItemRequestDto> save(@RequestBody @Valid ItemRequestDto itemRequestDto,
+    public ResponseEntity<ItemRequestDto> save(@RequestBody ItemRequestDto itemRequestDto,
                                                @RequestHeader("X-Sharer-User-Id") Long userId) {
         log.info("Получен запрос на сохранение запроса");
         return ResponseEntity.ok().body(service.save(itemRequestDto, userId));
@@ -44,12 +41,9 @@ public class ItemRequestController {
     @GetMapping("/all")
     public ResponseEntity<List<ItemRequestDto>> getAll(
             @RequestHeader("X-Sharer-User-Id") Long userId,
-            @PositiveOrZero @RequestParam(required = false, defaultValue = "0") int from,
-            @Positive @RequestParam(required = false, defaultValue = "10") int size) {
+            @RequestParam(required = false, defaultValue = "0") int from,
+            @RequestParam(required = false, defaultValue = "10") int size) {
         log.info("Получен запрос на получение списка запросов");
-        if (from < 0 || size < 1) {
-            throw new IllegalArgumentException("Некорректные параметры пагинации");
-        }
         return ResponseEntity.ok().body(service.getAll(userId, PageRequest.of(from / size, size)));
     }
 

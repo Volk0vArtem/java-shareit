@@ -17,9 +17,6 @@ import ru.practicum.shareit.item.comment.dto.CommentDto;
 import ru.practicum.shareit.item.dto.ItemDto;
 import ru.practicum.shareit.item.service.ItemService;
 
-import javax.validation.Valid;
-import javax.validation.constraints.Positive;
-import javax.validation.constraints.PositiveOrZero;
 import java.util.List;
 
 @RestController
@@ -31,7 +28,7 @@ public class ItemController {
     private final ItemService service;
 
     @PostMapping
-    public ResponseEntity<ItemDto> saveItem(@RequestBody @Valid ItemDto itemDto,
+    public ResponseEntity<ItemDto> saveItem(@RequestBody ItemDto itemDto,
                                             @RequestHeader("X-Sharer-User-Id") Long userId) {
         log.info("Получен запрос на добавление вещи {}", itemDto);
         return ResponseEntity.ok().body(service.saveItem(itemDto, userId));
@@ -44,10 +41,9 @@ public class ItemController {
     }
 
     @GetMapping
-    public ResponseEntity<List<ItemDto>> getItemsByID(
-            @RequestHeader("X-Sharer-User-Id") Long id,
-            @RequestParam(required = false, defaultValue = "0") @Positive int from,
-            @RequestParam(required = false, defaultValue = "10") @Positive int size) {
+    public ResponseEntity<List<ItemDto>> getItemsByID(@RequestHeader("X-Sharer-User-Id") Long id,
+                                                      @RequestParam int from,
+                                                      @RequestParam int size) {
         log.info("Получен запрос на получение вещей пользователя id={}", id);
         return ResponseEntity.ok().body(service.getItemsByID(id, PageRequest.of(from / size, size)));
     }
@@ -60,10 +56,9 @@ public class ItemController {
     }
 
     @GetMapping("/search")
-    public ResponseEntity<List<ItemDto>> search(
-            @RequestParam String text,
-            @PositiveOrZero @RequestParam(required = false, defaultValue = "0") int from,
-            @Positive @RequestParam(required = false, defaultValue = "10") int size) {
+    public ResponseEntity<List<ItemDto>> search(@RequestParam String text,
+                                                @RequestParam int from,
+                                                @RequestParam int size) {
         if (from < 0 || size < 1) {
             throw new IllegalArgumentException("Некорректные параметры пагинации");
         }
@@ -72,7 +67,7 @@ public class ItemController {
     }
 
     @PostMapping("{itemId}/comment")
-    public ResponseEntity<CommentDto> postComment(@RequestBody @Valid CommentDto commentDto, @PathVariable Long itemId,
+    public ResponseEntity<CommentDto> postComment(@RequestBody CommentDto commentDto, @PathVariable Long itemId,
                                                   @RequestHeader("X-Sharer-User-Id") Long userId) {
         log.info("Получен запрос на добавление комментария для вещи id={}, text='{}' от пользователя id={}",
                 itemId, commentDto.getText(), userId);

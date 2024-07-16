@@ -73,58 +73,6 @@ class BookingControllerTest {
     }
 
     @Test
-    void saveStartFail() throws Exception {
-        when(bookingService.save(any(BookingDto.class), anyLong()))
-                .thenAnswer(invocationOnMock -> {
-                    BookingDto bookingDto = invocationOnMock.getArgument(0, BookingDto.class);
-                    bookingDto.setId(1L);
-                    return bookingDto;
-                });
-        booking.setStart(LocalDateTime.now().minusSeconds(100));
-        mvc.perform(post("/bookings")
-                        .content(mapper.writeValueAsString(booking))
-                        .header("X-Sharer-User-Id", 1)
-                        .characterEncoding(StandardCharsets.UTF_8)
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .accept(MediaType.APPLICATION_JSON))
-                .andExpect(status().isBadRequest());
-    }
-
-    @Test
-    void saveEndFail() throws Exception {
-        when(bookingService.save(any(BookingDto.class), anyLong()))
-                .thenAnswer(invocationOnMock -> {
-                    BookingDto bookingDto = invocationOnMock.getArgument(0, BookingDto.class);
-                    bookingDto.setId(1L);
-                    return bookingDto;
-                });
-        booking.setEnd(LocalDateTime.now().minusSeconds(100));
-        mvc.perform(post("/bookings")
-                        .content(mapper.writeValueAsString(booking))
-                        .header("X-Sharer-User-Id", 1)
-                        .characterEncoding(StandardCharsets.UTF_8)
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .accept(MediaType.APPLICATION_JSON))
-                .andExpect(status().isBadRequest());
-    }
-
-    @Test
-    void saveHeaderFail() throws Exception {
-        when(bookingService.save(any(BookingDto.class), anyLong()))
-                .thenAnswer(invocationOnMock -> {
-                    BookingDto bookingDto = invocationOnMock.getArgument(0, BookingDto.class);
-                    bookingDto.setId(1L);
-                    return bookingDto;
-                });
-        mvc.perform(post("/bookings")
-                        .content(mapper.writeValueAsString(booking))
-                        .characterEncoding(StandardCharsets.UTF_8)
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .accept(MediaType.APPLICATION_JSON))
-                .andExpect(status().isBadRequest());
-    }
-
-    @Test
     void getBooking() throws Exception {
         BookingDto bookingDto = new BookingDto();
         when(bookingService.getBooking(anyLong(), anyLong()))
@@ -157,22 +105,12 @@ class BookingControllerTest {
         BookingDto bookingDto = new BookingDto();
         when(bookingService.getBookings(anyLong(), anyString(), any(PageRequest.class)))
                 .thenReturn(List.of(bookingDto));
-        mvc.perform(get("/bookings?from=0&size=10")
+        mvc.perform(get("/bookings?from=0&size=10&state=ALL")
                         .characterEncoding(StandardCharsets.UTF_8)
                         .header("X-Sharer-User-Id", 1)
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk());
-    }
-
-    @Test
-    void getBookingsPaginationFail() throws Exception {
-        mvc.perform(get("/bookings?from=-1&size=1")
-                        .characterEncoding(StandardCharsets.UTF_8)
-                        .header("X-Sharer-User-Id", 1)
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .accept(MediaType.APPLICATION_JSON))
-                .andExpect(status().isBadRequest());
     }
 
     @Test
@@ -180,22 +118,11 @@ class BookingControllerTest {
         BookingDto bookingDto = new BookingDto();
         when(bookingService.getBookingsByOwner(anyLong(), anyString(), any(PageRequest.class)))
                 .thenReturn(List.of(bookingDto));
-        mvc.perform(get("/bookings/owner?from=0&size=10")
+        mvc.perform(get("/bookings/owner?from=0&size=10&state=ALL")
                         .characterEncoding(StandardCharsets.UTF_8)
                         .header("X-Sharer-User-Id", 1)
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk());
     }
-
-    @Test
-    void getBookingsByOwnerPaginationFail() throws Exception {
-        mvc.perform(get("/bookings/owner?from=-1&size=10")
-                        .characterEncoding(StandardCharsets.UTF_8)
-                        .header("X-Sharer-User-Id", 1)
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .accept(MediaType.APPLICATION_JSON))
-                .andExpect(status().isBadRequest());
-    }
-
 }

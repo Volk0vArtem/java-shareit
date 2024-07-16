@@ -15,7 +15,6 @@ import org.springframework.web.bind.annotation.RestController;
 import ru.practicum.shareit.user.dto.UserDto;
 import ru.practicum.shareit.user.service.UserService;
 
-import javax.validation.Valid;
 import java.util.List;
 
 @RestController
@@ -26,7 +25,7 @@ public class UserController {
     private final UserService service;
 
     @PostMapping
-    public ResponseEntity<UserDto> saveUser(@RequestBody @Valid UserDto userDto) {
+    public ResponseEntity<UserDto> saveUser(@RequestBody UserDto userDto) {
         log.info("Получен запрос на сохранение пользователя {}", userDto);
         return ResponseEntity.ok().body(service.saveUser(userDto));
     }
