@@ -26,19 +26,19 @@ import javax.validation.constraints.PositiveOrZero;
 @Slf4j
 @Validated
 public class ItemController {
-    private final ItemClient service;
+    private final ItemClient itemClient;
 
     @PostMapping
     public ResponseEntity<Object> saveItem(@RequestBody @Valid ItemRequestDto itemDto,
                                            @RequestHeader("X-Sharer-User-Id") Long userId) {
         log.info("Получен запрос на добавление вещи {}", itemDto);
-        return service.saveItem(itemDto, userId);
+        return itemClient.saveItem(itemDto, userId);
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<Object> getItem(@PathVariable Long id, @RequestHeader("X-Sharer-User-Id") Long userId) {
         log.info("Получен запрос на получение вещи id={}", id);
-        return service.getItem(id, userId);
+        return itemClient.getItem(id, userId);
     }
 
     @GetMapping
@@ -47,14 +47,14 @@ public class ItemController {
             @RequestParam(required = false, defaultValue = "0") @PositiveOrZero int from,
             @RequestParam(required = false, defaultValue = "10") @Positive int size) {
         log.info("Получен запрос на получение вещей пользователя id={}, from={}, size={}", id, from, size);
-        return service.getItemsById(id, from, size);
+        return itemClient.getItemsById(id, from, size);
     }
 
     @PatchMapping("/{id}")
     public ResponseEntity<Object> patchItem(@RequestBody ItemRequestDto itemDto, @PathVariable Long id,
                                             @RequestHeader("X-Sharer-User-Id") Long userId) {
         log.info("Получен запрос на изменение вещи id={}", id);
-        return service.patchItem(itemDto, id, userId);
+        return itemClient.patchItem(itemDto, id, userId);
     }
 
     @GetMapping("/search")
@@ -66,7 +66,7 @@ public class ItemController {
             throw new IllegalArgumentException("Некорректные параметры пагинации");
         }
         log.info("Получен запрос на поиск вещи по запросу «{}»", text);
-        return service.search(text, from, size);
+        return itemClient.search(text, from, size);
     }
 
     @PostMapping("{itemId}/comment")
@@ -74,6 +74,6 @@ public class ItemController {
                                               @RequestHeader("X-Sharer-User-Id") Long userId) {
         log.info("Получен запрос на добавление комментария для вещи id={}, text='{}' от пользователя id={}",
                 itemId, commentDto.getText(), userId);
-        return service.postComment(commentDto, itemId, userId);
+        return itemClient.postComment(commentDto, itemId, userId);
     }
 }

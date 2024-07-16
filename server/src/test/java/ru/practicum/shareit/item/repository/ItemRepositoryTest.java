@@ -106,7 +106,7 @@ class ItemRepositoryTest {
         user2 = userRepository.save(user2);
         itemRepository.save(item3);
 
-        List<Item> result = itemRepository.findAllByOwnerId(user2.getId(), PageRequest.of(0, 10));
+        List<Item> result = itemRepository.findAllByOwnerIdOrderByIdAsc(user2.getId(), PageRequest.of(0, 10));
 
         assertEquals(1, result.size());
         assertTrue(result.contains(item3));
@@ -127,7 +127,7 @@ class ItemRepositoryTest {
         userRepository.save(user2);
         itemRepository.save(item3);
 
-        List<Item> result = itemRepository.findAllByOwnerId(user1.getId(), PageRequest.of(0, 10));
+        List<Item> result = itemRepository.findAllByOwnerIdOrderByIdAsc(user1.getId(), PageRequest.of(0, 10));
 
         assertEquals(2, result.size());
         assertTrue(result.contains(item1));
@@ -149,7 +149,7 @@ class ItemRepositoryTest {
         userRepository.save(user2);
         itemRepository.save(item3);
 
-        List<Item> result = itemRepository.findAllByOwnerId(999L, PageRequest.of(0, 10));
+        List<Item> result = itemRepository.findAllByOwnerIdOrderByIdAsc(999L, PageRequest.of(0, 10));
 
         assertEquals(0, result.size());
     }
