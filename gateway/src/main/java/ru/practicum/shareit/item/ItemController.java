@@ -44,8 +44,8 @@ public class ItemController {
     @GetMapping
     public ResponseEntity<Object> getItemsById(
             @RequestHeader("X-Sharer-User-Id") Long id,
-            @RequestParam(required = false, defaultValue = "0") @PositiveOrZero int from,
-            @RequestParam(required = false, defaultValue = "10") @Positive int size) {
+            @RequestParam(required = false, defaultValue = "0") @PositiveOrZero Integer from,
+            @RequestParam(required = false, defaultValue = "10") @Positive Integer size) {
         log.info("Получен запрос на получение вещей пользователя id={}, from={}, size={}", id, from, size);
         return itemClient.getItemsById(id, from, size);
     }
@@ -60,8 +60,8 @@ public class ItemController {
     @GetMapping("/search")
     public ResponseEntity<Object> search(
             @RequestParam String text,
-            @PositiveOrZero @RequestParam(required = false, defaultValue = "0") int from,
-            @Positive @RequestParam(required = false, defaultValue = "10") int size) {
+            @PositiveOrZero @RequestParam(required = false, defaultValue = "0") Integer from,
+            @Positive @RequestParam(required = false, defaultValue = "10") Integer size) {
         if (from < 0 || size < 1) {
             throw new IllegalArgumentException("Некорректные параметры пагинации");
         }
